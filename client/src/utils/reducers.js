@@ -11,6 +11,17 @@ import {
   TOGGLE_CART,
 } from "./actions";
 
+import { combineReducers } from "redux";
+
+const initialState = {
+  products: [],
+  categories: [],
+  currentCategory: "",
+  ADD_TO_CART: [],
+  cart: [],
+  cartOpen: false,
+};
+
 export const reducer = (state, action) => {
   switch (action.type) {
     // if action type value is the value of `UPDATE_PRODUCTS`, return a new state object with an updated products array
@@ -78,6 +89,5 @@ export const reducer = (state, action) => {
       return state;
   }
 };
-export function useProductReducer(initialState) {
-  return useReducer(reducer, initialState);
-}
+
+export default reducer;

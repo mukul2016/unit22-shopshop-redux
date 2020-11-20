@@ -5,7 +5,6 @@ import { useQuery } from "@apollo/react-hooks";
 
 import { QUERY_PRODUCTS } from "../utils/queries";
 import spinner from "../assets/spinner.gif";
-import { useStoreContext } from "../utils/GlobalState";
 // import { UPDATE_PRODUCTS } from "../utils/actions";
 import Cart from "../components/Cart";
 import {
@@ -14,9 +13,11 @@ import {
   ADD_TO_CART,
   UPDATE_PRODUCTS,
 } from "../utils/actions";
+import { useDispatch, useSelector } from "react-redux";
 
 function Detail() {
-  const [state, dispatch] = useStoreContext();
+  const dispatch = useDispatch();
+  const state = useSelector((state) => state);
   const { id } = useParams();
 
   const [currentProduct, setCurrentProduct] = useState({});
@@ -51,60 +52,55 @@ function Detail() {
   useEffect(() => {
     // already in global store
     if (products.length) {
-      setCurrentProduct(products.find(product => product._id === id));
-    } 
+      setCurrentProduct(products.find((product) => product._id === id));
+    }
     // retrieved from server
     else if (data) {
       dispatch({
         type: UPDATE_PRODUCTS,
-        products: data.products
+        products: data.products,
       });
-  
+
       data.products.forEach((product) => {
-        idbPromise('products', 'put', product);
+        idbPromise("products", "put", product);
       });
     }
     // get cache from idb
     else if (!loading) {
-      idbPromise('products', 'get').then((indexedProducts) => {
+      idbPromise("products", "get").then((indexedProducts) => {
         dispatch({
           type: UPDATE_PRODUCTS,
-          products: indexedProducts
+          products: indexedProducts,
         });
       });
     }
   }, [products, data, loading, dispatch, id]);
-  
 
   return (
     <>
+      {" "}
       {currentProduct ? (
         <div className="container my-1">
-          <Link to="/">← Back to Products</Link>
-
-          <h2>{currentProduct.name}</h2>
-
-          <p>{currentProduct.description}</p>
-
+          <Link to="/"> ←Back to Products </Link>
+          <h2> {currentProduct.name} </h2>
+          <p> {currentProduct.description} </p>
           <p>
-            <strong>Price:</strong>${currentProduct.price}{" "}
-            <button onClick={addToCart}>Add to cart</button>
+            <strong> Price: </strong>${currentProduct.price}{" "}
+            <button onClick={addToCart}> Add to cart </button>{" "}
             <button
               disabled={!cart.find((p) => p._id === currentProduct._id)}
               onClick={removeFromCart}
             >
-              Remove from Cart
-            </button>
+              Remove from Cart{" "}
+            </button>{" "}
           </p>
-
           <img
             src={`/images/${currentProduct.image}`}
             alt={currentProduct.name}
-          />
+          />{" "}
         </div>
-      ) : null}
-      {loading ? <img src={spinner} alt="loading" /> : null}
-      <Cart />
+      ) : null}{" "}
+      {loading ? <img src={spinner} alt="loading" /> : null} <Cart />
     </>
   );
 }
