@@ -1,5 +1,5 @@
 # shop-shop
-e-commerce site built using MERN stack
+shopshop app built using MERN stack
 
 ![image](https://github.com/mukul2016/unit22-shopshop-redux/blob/main/shopshop-screenshot.png)
 
